@@ -48,3 +48,35 @@ export default function Catalog() {
     if (product.stock <= 0) return;
     setCart(prev => [...prev, product]);
   };
+
+   const removeOne = (id) => {
+    const idx = cart.findIndex(i => i.id === id);
+    if (idx > -1) {
+      const newCart = [...cart];
+      newCart.splice(idx, 1);
+      setCart(newCart);
+    }
+  };
+
+  const resetCart = () => setCart([]);
+
+  if (status !== 'ready')
+    return <StatusMessage status={status} count={filtered.length} />;
+
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      <div className="col-span-1 space-y-4">
+        <CategoryFilter value={category} onChange={setCategory} />
+        <PriceFilter value={maxPrice} onChange={setMaxPrice} />
+        <CartSummary cart={cart} onRemove={removeOne} onReset={resetCart} />
+      </div>
+      <div className="col-span-3">
+        {filtered.length === 0 ? (
+          <StatusMessage status="empty" count={0} />
+        ) : (
+          <ProductList products={filtered} onAdd={addToCart} />
+        )}
+      </div>
+    </div>
+  );
+}
